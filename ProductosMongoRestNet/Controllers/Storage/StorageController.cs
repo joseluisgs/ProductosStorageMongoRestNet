@@ -11,12 +11,10 @@ public class StorageController : ControllerBase
 {
     private const string _route = "api/storage";
     private readonly IFileStorageService _fileStorageService;
-    private readonly ILogger<StorageController> _logger;
 
-    public StorageController(IFileStorageService fileStorageService, ILogger<StorageController> logger)
+    public StorageController(IFileStorageService fileStorageService) 
     {
         _fileStorageService = fileStorageService;
-        _logger = logger;
     }
 
     [HttpPost]
