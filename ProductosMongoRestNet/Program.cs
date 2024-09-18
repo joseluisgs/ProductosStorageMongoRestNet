@@ -1,6 +1,7 @@
 using System.Text;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using ProductosMongoRestNet.Config.Storage;
 using ProductosMongoRestNet.Database;
 using ProductosMongoRestNet.Services;
 using Serilog;
@@ -72,6 +73,10 @@ WebApplicationBuilder InitServices()
 
     // Cache en memoria
     myBuilder.Services.AddMemoryCache();
+    
+    // Configuración de almacenamiento de archivos
+    myBuilder.Services.Configure<FileStorageConfig>(
+        myBuilder.Configuration.GetSection("FileStorage"));
 
     // Servicios de books
     // myBuilder.Services.AddSingleton<BooksService>();
