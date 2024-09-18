@@ -73,10 +73,11 @@ WebApplicationBuilder InitServices()
 
     // Cache en memoria
     myBuilder.Services.AddMemoryCache();
-    
+
     // Configuración de almacenamiento de archivos
     myBuilder.Services.Configure<FileStorageConfig>(
         myBuilder.Configuration.GetSection("FileStorage"));
+    StorageInit(); // Inicializamos el almacenamiento de archivos
 
     // Servicios de books
     // myBuilder.Services.AddSingleton<BooksService>();
@@ -148,4 +149,19 @@ void TryConnectionDataBase()
         logger.Error(ex, "🔴 Error connecting to , closing application");
         Environment.Exit(1);
     }
+}
+
+void StorageInit()
+{
+    logger.Debug("Initializing file storage");
+    // Inicializamos el almacenamiento de archivos
+    var fileStorageConfig = configuration.GetSection("FileStorage").Get<FileStorageConfig>();
+    // Creamos un directorio si no existe
+    Directory.CreateDirectory(fileStorageConfig.UploadDirectory);
+    // Configuramos el almacenador de archivos
+    // Si tememos la clave RemoveAll a true, eliminamos todos los archivos del directorio
+    if (fileStorageConfig.RemoveAll)
+        foreach (var file in Directory.GetFiles(fileStorageConfig.UploadDirectory))
+            File.Delete(file);
+    logger.Information("🟢 File storage initialized successfully!");
 }
