@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProductosMongoRestNet.Config.Storage;
 using ProductosMongoRestNet.Exceptions.FileStorage;
 using ProductosMongoRestNet.Services.Storage;
 
@@ -46,7 +47,12 @@ public class StorageController : ControllerBase
         try
         {
             var fileStream = await _fileStorageService.GetFileAsync(fileName);
-            return File(fileStream, "application/octet-stream", fileName); // Devolvemos el fichero como respuesta
+            // De esta manera iniciamos la descarga del fichero
+            //return File(fileStream, "application/octet-stream", fileName); // Devolvemos el fichero como respuesta
+            // Si lo dejamos previsualkiza y si no descarga
+            var fileExtension = Path.GetExtension(fileName);
+            var mimeType = MimeTypes.GetMimeType(fileExtension);
+            return File(fileStream, mimeType, fileName); // Devolvemos el fichero como respuesta
         }
         catch (FileStorageException e)
         {
