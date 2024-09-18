@@ -19,10 +19,18 @@ public class Book
     public string Category { get; set; } = null!;
 
     public string Author { get; set; } = null!;
-
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] // Esto indica que si el campo es null no se incluirá en la respuesta
+    [BsonIgnoreIfNull] // Esto indica que si el campo es null no se incluirá en la colección
+    public string? Image { get; set; } = null!;
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [BsonIgnoreIfNull] 
     [JsonPropertyName("createdAt")] 
     public DateTime? CreatedAt { get; set; }
-
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [BsonIgnoreIfNull] 
     [JsonPropertyName("updatedAt")] 
     public DateTime? UpdatedAt { get; set; }
 }
