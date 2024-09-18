@@ -44,7 +44,7 @@ public class FileStorageService : IFileStorageService
         }
 
         _logger.LogInformation($"File saved: {fileName}");
-        return $"/{fileName}";
+        return fileName;
     }
 
     public async Task<FileStream> GetFileAsync(string fileName)
@@ -53,20 +53,23 @@ public class FileStorageService : IFileStorageService
         try
         {
             var filePath = Path.Combine(_fileStorageConfig.UploadDirectory, fileName);
+
+            // Comprobamos si el fichero existe
             if (!File.Exists(filePath))
             {
-                _logger.LogError($"File not found: {filePath}");
+                _logger.LogWarning($"File not found: {filePath}");
                 // throw new FileNotFoundException($"File not found: {fileName}");
                 throw new FileStorageException($"File not found: {fileName}");
             }
 
+            // Si todo va bien, devuelve el stream del fichero
             _logger.LogInformation($"File found: {filePath}");
             return new FileStream(filePath, FileMode.Open, FileAccess.Read);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting file");
-            throw new FileStorageException("Error getting file", ex);
+            throw;
         }
     }
 
@@ -76,9 +79,15 @@ public class FileStorageService : IFileStorageService
         try
         {
             var filePath = Path.Combine(_fileStorageConfig.UploadDirectory, fileName);
-            if (!File.Exists(filePath))
-                return false;
 
+            // Comprobamos si el fichero existe
+            if (!File.Exists(filePath))
+            {
+                _logger.LogWarning($"File not found: {filePath}");
+                return false;
+            }
+
+            // Si existe, lo borramos
             File.Delete(filePath);
             _logger.LogInformation($"File deleted: {filePath}");
             return true;
@@ -86,7 +95,7 @@ public class FileStorageService : IFileStorageService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error deleting file");
-            throw new FileStorageException("Error deleting file", ex);
+            throw;
         }
     }
 }

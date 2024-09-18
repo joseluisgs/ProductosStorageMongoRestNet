@@ -28,7 +28,7 @@ public class BooksController : ControllerBase
     {
         var book = await _booksService.GetByIdAsync(id);
 
-        if (book is null) return NotFound();
+        if (book is null) return NotFound("Book not found with the provided id: " + id);
 
         return book;
     }
@@ -47,7 +47,7 @@ public class BooksController : ControllerBase
     {
         var updatedBook = await _booksService.UpdateAsync(id, book);
 
-        if (updatedBook is null) return NotFound();
+        if (updatedBook is null) return NotFound("Book not found with the provided id: " + id);
 
         return Ok(updatedBook);
     }
@@ -57,7 +57,7 @@ public class BooksController : ControllerBase
     {
         var deletedBook = await _booksService.DeleteAsync(id);
 
-        if (deletedBook is null) return NotFound();
+        if (deletedBook is null) return NotFound("Book not found with the provided id: " + id);
 
         return NoContent();
     }

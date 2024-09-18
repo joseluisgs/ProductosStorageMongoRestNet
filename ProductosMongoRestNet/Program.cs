@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using ProductosMongoRestNet.Config.Storage;
 using ProductosMongoRestNet.Database;
 using ProductosMongoRestNet.Services;
+using ProductosMongoRestNet.Services.Storage;
 using Serilog;
 using Serilog.Core;
 
@@ -86,7 +87,9 @@ WebApplicationBuilder InitServices()
     // myBuilder.Services.AddSingleton<BooksService>();
 
     myBuilder.Services.AddSingleton<IBooksService, BooksService>();
-    myBuilder.Services.AddSingleton<BooksService>();
+
+    // Servicios de storage
+    myBuilder.Services.AddSingleton<IFileStorageService, FileStorageService>();
 
 
     // Añadimos los controladores
@@ -161,7 +164,11 @@ void StorageInit()
     // Configuramos el almacenador de archivos
     // Si tememos la clave RemoveAll a true, eliminamos todos los archivos del directorio
     if (fileStorageConfig.RemoveAll)
+    {
+        logger.Debug("Removing all files in the storage directory");
         foreach (var file in Directory.GetFiles(fileStorageConfig.UploadDirectory))
             File.Delete(file);
+    }
+
     logger.Information("🟢 File storage initialized successfully!");
 }
